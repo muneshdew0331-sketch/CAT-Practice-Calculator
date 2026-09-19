@@ -1,0 +1,395 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+:root {
+  --btn-font-size: 16px;
+  --op-font-size: 18px;
+  --typography-scale: 0.95;
+  --btn-boldness: 0;
+  --num-btn-font-size: calc(var(--btn-font-size) * var(--typography-scale));
+  --func-btn-font-size: calc(var(--btn-font-size) * var(--typography-scale));
+  --op-btn-font-size: calc(var(--op-font-size) * var(--typography-scale));
+  --btn-text-stroke: calc(var(--btn-font-size) * var(--btn-boldness));
+  --display-typography-scale: 0.90;
+  --expression-font-size: 12.35px;
+  --result-font-size: 25px;
+  --expression-font-size-scaled: calc(var(--expression-font-size) * var(--display-typography-scale));
+  --result-font-size-scaled: calc(var(--result-font-size) * var(--display-typography-scale));
+}
+
+/* Sizing is controlled by main.js (7:9 aspect ratio, scaled to the screen).
+   The calculator content fills the BrowserWindow entirely. */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  font-family: "Arial", sans-serif;
+}
+
+/* Main calculator window */
+
+.calculator-window {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #777777;
+  border-radius: 3px;
+  background: #ededed;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.35),
+    inset 1px 1px 0 #ffffff;
+}
+
+/* Title bar */
+
+.title-bar {
+  height: 29px;
+  min-height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 7px;
+  background: linear-gradient(
+    to bottom,
+    #7198d1 0%,
+    #4779bd 45%,
+    #315fa8 100%
+  );
+  color: #ffffff;
+  font-family: "Arial", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  border-bottom: 1px solid #244b85;
+  -webkit-app-region: drag;
+}
+
+.title-text {
+  -webkit-app-region: drag;
+}
+
+.window-controls {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 4px;
+  -webkit-app-region: no-drag;
+}
+
+.control-btn {
+  width: 20px;
+  height: 19px;
+  padding: 0;
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.collapse-btn {
+  color: #1f1f1f;
+  background: #d8d8d8;
+  border-color: #eeeeee #666666 #666666 #eeeeee;
+}
+
+.close-btn {
+  color: #ffffff;
+  background: #e46b42;
+  border-color: #ffb49a #98452c #98452c #ffb49a;
+}
+
+/* Calculator body */
+
+.calculator-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5px 8.5px 21.5px;
+  justify-content: center;
+  background: #ededed;
+}
+
+/* Display */
+
+.display-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 4.2px;
+}
+
+.expression-display,
+.result-display {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
+  padding: 0 6px;
+  border: 1px solid #777777;
+  background: #ffffff;
+  color: #111111;
+  font-family: "Arial", sans-serif;
+}
+
+.expression-display {
+  height: 31px;
+  min-height: 31px;
+  font-size: var(--expression-font-size);
+}
+
+.result-display {
+  height: 31px;
+  min-height: 31px;
+  font-size: var(--result-font-size-scaled);
+  font-weight: normal;
+  line-height: 29px;
+}
+
+.memory-indicator {
+  order: -1;
+  height: 15px;
+  min-height: 15px;
+  margin-bottom: 4px;
+  padding-left: 3px;
+  color: #222222;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+}
+
+/* Button grid — single flat grid, 5 cols × 6 rows */
+
+.button-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 34.5px);
+  grid-template-rows: repeat(6, 23.4px);
+  grid-template-areas:
+    "mc     mr     ms     mplus  mminus"
+    "back   back   clr    sign   sqrt"
+    "b7     b8     b9     div    pct"
+    "b4     b5     b6     mul    recip"
+    "b1     b2     b3     sub    eq"
+    "zero   zero   dot    add    eq";
+  column-gap: 8.125px;
+  row-gap: 4.5px;
+  justify-content: center;
+  align-content: start;
+}
+
+/* Grid-area assignments */
+
+.btn[data-action="mc"]      { grid-area: mc; }
+.btn[data-action="mr"]      { grid-area: mr; }
+.btn[data-action="ms"]      { grid-area: ms; }
+.btn[data-action="mplus"]   { grid-area: mplus; }
+.btn[data-action="mminus"]  { grid-area: mminus; }
+
+.btn.backspace-btn          { grid-area: back; }
+.btn[data-action="clear"]   { grid-area: clr; }
+.btn[data-action="sign"]    { grid-area: sign; }
+.btn.sqrt-btn               { grid-area: sqrt; }
+
+.btn[data-value="7"]        { grid-area: b7; }
+.btn[data-value="8"]        { grid-area: b8; }
+.btn[data-value="9"]        { grid-area: b9; }
+.btn[data-action="divide"]  { grid-area: div; }
+.btn[data-action="percent"] { grid-area: pct; }
+
+.btn[data-value="4"]         { grid-area: b4; }
+.btn[data-value="5"]         { grid-area: b5; }
+.btn[data-value="6"]         { grid-area: b6; }
+.btn[data-action="multiply"] { grid-area: mul; }
+.btn[data-action="reciprocal"] { grid-area: recip; }
+
+.btn[data-value="1"]         { grid-area: b1; }
+.btn[data-value="2"]         { grid-area: b2; }
+.btn[data-value="3"]         { grid-area: b3; }
+.btn[data-action="subtract"] { grid-area: sub; }
+.btn.equals-btn              { grid-area: eq; }
+
+.btn.zero-btn                { grid-area: zero; }
+.btn[data-value="."]         { grid-area: dot; }
+.btn[data-action="add"]      { grid-area: add; }
+
+/* All buttons */
+
+.btn {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  font-size: var(--btn-font-size);
+  font-weight: normal;
+  line-height: 1;
+  -webkit-text-stroke: var(--btn-text-stroke);
+  cursor: pointer;
+  color: #111111;
+  -webkit-app-region: no-drag;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btn:active {
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  transform: translate(1px, 1px);
+}
+
+/* Memory buttons */
+
+.memory-btn {
+  background: linear-gradient(to bottom, #f1f1f1, #e4e4e4);
+  border-color: #ffffff #777777 #777777 #ffffff;
+  font-size: 12px;
+}
+
+/* Function buttons */
+
+.func-btn {
+  background: linear-gradient(to bottom, #f1f1f1, #e4e4e4);
+  border-color: #ffffff #777777 #777777 #ffffff;
+}
+
+.func-btn:not(.backspace-btn) {
+  font-size: var(--func-btn-font-size);
+}
+
+.red-btn {
+  background: linear-gradient(to bottom, #e74c3c, #ed6048);
+  border-color: #ffd0c4 #a63b2b #a63b2b #ffd0c4;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.btn[data-action="clear"] {
+  -webkit-text-stroke: 0;
+}
+
+/* Number buttons */
+
+.num-btn {
+  background: linear-gradient(to bottom, #f1f1f1, #e4e4e4);
+  border-color: #ffffff #777777 #777777 #ffffff;
+}
+
+.num-btn:not([data-value="."]) {
+  font-size: var(--num-btn-font-size);
+}
+
+/* Operator buttons */
+
+.op-btn {
+  background: linear-gradient(to bottom, #f1f1f1, #e4e4e4);
+  border-color: #ffffff #777777 #777777 #ffffff;
+  font-size: var(--op-btn-font-size);
+}
+
+.btn[data-action="multiply"],
+.btn[data-action="subtract"] {
+  font-size: var(--op-font-size);
+}
+
+/* Equals button */
+
+.equals-btn {
+  background: linear-gradient(to bottom, #2ecc71, #42ad3c);
+  border-color: #c8f4c2 #277523 #277523 #c8f4c2;
+  color: #ffffff;
+  font-size: 23px;
+  font-weight: bold;
+  -webkit-text-stroke: 0;
+}
+
+/* Collapsed state */
+
+/* Collapsed state: fill the whole (55x55) window so DPI rounding never
+   reveals the white window background, and use a solid blue underlay so
+   any edge/corner that shows while dragging is blue, never white. */
+
+.calculator-window.collapsed {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #315fa8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.calculator-window.collapsed .title-bar {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, #7198d1, #315fa8);
+  justify-content: center;
+  -webkit-app-region: no-drag;
+}
+
+.calculator-window.collapsed .title-text {
+  display: none;
+}
+
+.calculator-window.collapsed .window-controls,
+.calculator-window.collapsed .calculator-body {
+  display: none;
+}
+
+/* Restore target: only visible when collapsed. Drags move the window via
+   renderer pointer-drag; a plain click (renderer 5px threshold) restores. */
+
+.restore-target {
+  display: none;
+}
+
+.calculator-window.collapsed .restore-target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.logo-mark {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.logo-c {
+  font-size: 11px;
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAT Practice Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="calculator-window" id="calculatorWindow">
+
+    <div class="title-bar" id="titleBar">
+      <span class="title-text">Calculator</span>
+
+      <span class="restore-target" title="Restore calculator" aria-label="Restore calculator"><span class="logo-mark">M<span class="logo-c">c</span></span></span>
+
+      <div class="window-controls">
+        <!-- Kept for the collapse feature; CSS will hide it for now -->
+        <button
+          class="control-btn collapse-btn"
+          id="collapseBtn"
+          title="Collapse"
+          aria-label="Collapse calculator">
+          −
+        </button>
+
+        <button
+          class="control-btn close-btn"
+          id="closeBtn"
+          title="Close"
+          aria-label="Close calculator">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <div class="calculator-body">
+
+      <div class="display-area">
+        <div
+          class="expression-display"
+          id="expressionDisplay"
+          aria-label="Expression">
+        </div>
+
+        <div
+          class="result-display"
+          id="resultDisplay"
+          aria-label="Result">
+          0
+        </div>
+      </div>
+
+      <div
+        class="memory-indicator"
+        id="memoryIndicator"
+        aria-live="polite">
+      </div>
+
+      <div class="button-grid" role="grid" aria-label="Calculator buttons">
+
+        <!-- Row 1: Memory -->
+        <button class="btn memory-btn" data-action="mc">MC</button>
+        <button class="btn memory-btn" data-action="mr">MR</button>
+        <button class="btn memory-btn" data-action="ms">MS</button>
+        <button class="btn memory-btn" data-action="mplus">M+</button>
+        <button class="btn memory-btn" data-action="mminus">M-</button>
+
+        <!-- Row 2: Functions -->
+        <button class="btn func-btn red-btn backspace-btn" data-action="backspace">←</button>
+        <button class="btn func-btn red-btn" data-action="clear">C</button>
+        <button class="btn func-btn red-btn" data-action="sign">+/-</button>
+        <button class="btn func-btn sqrt-btn" data-action="sqrt">√</button>
+
+        <!-- Row 3: 7 8 9 / % -->
+        <button class="btn num-btn" data-value="7">7</button>
+        <button class="btn num-btn" data-value="8">8</button>
+        <button class="btn num-btn" data-value="9">9</button>
+        <button class="btn op-btn" data-action="divide">/</button>
+        <button class="btn func-btn" data-action="percent">%</button>
+
+        <!-- Row 4: 4 5 6 * 1/x -->
+        <button class="btn num-btn" data-value="4">4</button>
+        <button class="btn num-btn" data-value="5">5</button>
+        <button class="btn num-btn" data-value="6">6</button>
+        <button class="btn op-btn" data-action="multiply">*</button>
+        <button class="btn func-btn" data-action="reciprocal">1/x</button>
+
+        <!-- Row 5: 1 2 3 - = (equals spans rows 5-6) -->
+        <button class="btn num-btn" data-value="1">1</button>
+        <button class="btn num-btn" data-value="2">2</button>
+        <button class="btn num-btn" data-value="3">3</button>
+        <button class="btn op-btn" data-action="subtract">-</button>
+        <button class="btn equals-btn" data-action="equals">=</button>
+
+        <!-- Row 6: 0 . + -->
+        <button class="btn num-btn zero-btn" data-value="0">0</button>
+        <button class="btn num-btn" data-value=".">.</button>
+        <button class="btn op-btn" data-action="add">+</button>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "name": "cat-practice-calculator",
+  "version": "1.0.0",
+  "description": "CAT Practice Calculator - Floating desktop calculator for aptitude test practice",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --win",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.catpractice.calculator",
+    "productName": "CAT Practice Calculator",
+    "copyright": "Copyright © 2026",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "renderer.js",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CAT Practice Calculator"
+    },
+    "portable": {
+      "artifactName": "CAT-Practice-Calculator-${version}-${arch}.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "keywords": [
+    "calculator",
+    "cat",
+    "aptitude",
+    "practice",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT"
+}
